@@ -1,0 +1,24 @@
+version: '3.4'
+
+services:
+  urlrouter.webapi:
+    container_name: urlrouter_webapi
+    image: ${DOCKER_REGISTRY-}urlrouterwebapi
+    build:
+      context: .
+      dockerfile: UrlRouter.WebApi\Dockerfile
+  
+  urlrouter.aspnetmvc:
+    container_name: urlrouter_aspnetmvc
+    image: ${DOCKER_REGISTRY-}urlrouteraspnetmvc
+    build:
+      context: .
+      dockerfile: UrlRouter.AspNetMvc/Dockerfile
+    depends_on:
+      - urlrouter.webapi
+
+  mongo:
+    container_name: MongoDB
+    image: mongo
+    ports:
+      - "27017:27017"

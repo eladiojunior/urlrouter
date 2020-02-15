@@ -10,16 +10,16 @@ EXPOSE 443
 
 FROM mcr.microsoft.com/dotnet/core/sdk:2.1-nanoserver-1809 AS build
 WORKDIR /src
-COPY ["UrlRouter.MVC/UrlRouter.MVC.csproj", "UrlRouter.MVC/"]
-RUN dotnet restore "UrlRouter.MVC/UrlRouter.MVC.csproj"
+COPY ["UrlRouter.MVC/UrlRouter.AspNetMvc.csproj", "UrlRouter.AspNetMvc/"]
+RUN dotnet restore "UrlRouter.AspNetMvc/UrlRouter.AspNetMvc.csproj"
 COPY . .
-WORKDIR "/src/UrlRouter.MVC"
-RUN dotnet build "UrlRouter.MVC.csproj" -c Release -o /app/build
+WORKDIR "/src/UrlRouter.AspNetMvc"
+RUN dotnet build "UrlRouter.AspNetMvc.csproj" -c Release -o /app/build
 
 FROM build AS publish
-RUN dotnet publish "UrlRouter.MVC.csproj" -c Release -o /app/publish
+RUN dotnet publish "UrlRouter.AspNetMvc.csproj" -c Release -o /app/publish
 
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
-ENTRYPOINT ["dotnet", "UrlRouter.MVC.dll"]
+ENTRYPOINT ["dotnet", "UrlRouter.AspNetMvc.dll"]

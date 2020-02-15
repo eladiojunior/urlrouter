@@ -1,0 +1,30 @@
+﻿@using UrlRouter.AspNetMvc.Models
+@model List<RotaUrlViewModel>
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th scope="col" title="Nome da Rota Url.">Nome</th>
+            <th scope="col" title="Descrição da Rota Url.">Descrição</th>
+            <th scope="col" title="Rota com controle de acesso para estatística.">Controle?</th>
+            <th scope="col">Ação</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model == null || !Model.Any())
+        {
+            <tr><td colspan="4">Nenhuma configuração de rota encontrada para o filtro informado.</td></tr>
+        }
+        else
+        {
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>@item.NomeRota</td>
+                    <td>@item.DescricaoRota</td>
+                    <td>@(item.HasControleAcesso?"Sim":"Não")</td>
+                    <td><a href="#" class="editar" data-id="@item.ChaveRota" title="Editar configuração da rota Url.">Editar</a></td>
+                </tr>
+            }
+        }
+    </tbody>
+</table>
