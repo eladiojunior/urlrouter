@@ -31,7 +31,7 @@ namespace UrlRouter.WebApi.Controllers
         {
             var item = await RotaUrlRepository.GetById(id);
             if (item == null)
-                return NotFound($"Id da Rota Url [{id}] não encontrada.");
+                return NotFound($"Id da rota URL [{id}] não encontrada.");
             return Ok(ConvertModels.ConverterToModel(item));
         }
 
@@ -40,7 +40,7 @@ namespace UrlRouter.WebApi.Controllers
         {
             var item = await RotaUrlRepository.GetByChave(chave);
             if (item == null)
-                return NotFound($"Chave da Rota Url [{chave}] não encontrada.");
+                return NotFound($"Chave da rota URL [{chave}] não encontrada.");
             return Ok(ConvertModels.ConverterToModel(item));
         }
 
@@ -48,11 +48,13 @@ namespace UrlRouter.WebApi.Controllers
         public async Task<IActionResult> Create([FromBody] RotaUrlModel model)
         {
             if (model == null)
-                return BadRequest("Informações da Rota Url não informada.");
+                return BadRequest("Informações da rota URL não preenchidas.");
+            if (string.IsNullOrEmpty(model.Nome))
+                return BadRequest("Nome da rota URL não informada, obrigatório.");
             var entity = ConvertModels.ConverterToEntity(model);
             entity.Chave = ObterNovaChaveRota();
             await RotaUrlRepository.Create(entity);
-            return Ok($"Rota Url chave: [{entity.Chave}] registrada com sucesso.");
+            return Ok($"Rota URL [chave: {entity.Chave}] registrada com sucesso.");
         }
 
         /// <summary>
@@ -68,12 +70,27 @@ namespace UrlRouter.WebApi.Controllers
         public async Task<IActionResult> Update([FromBody] RotaUrlModel model)
         {
             if (model == null)
-                return BadRequest("Informações da Rota Url não informada.");
-            var entity = ConvertModels.ConverterToEntity(model);
+                return BadRequest("Informações da rota URL não preechidas.");
+            if (string.IsNullOrEmpty(model.Id))
+                return BadRequest("Identificador da rota URL não informado, obrigatório.");
+            var entity = await RotaUrlRepository.GetById(model.Id);
+            if (entity == null)
+                return NotFound($"Id da rota URL [{model.Id}] não encontrada, impossível atualizar.");
+            //Atualizar os campos enviados na model.
+            entity.Nome = model.Nome;
+            entity.Descricao = model.Descricao;
+            entity.UrlDestino = model.UrlDestino;
+            entity.UrlDestinoIOS = model.UrlDestinoIOS;
+            entity.UrlDestinoAndroid = model.UrlDestinoAndroid;
+            entity.UrlDestinoWindowsPhone = model.UrlDestinoWindowsPhone;
+            entity.HasControleAcesso = model.HasControleAcesso;
+            entity.DataInicialVigencia = model.DataInicialVigencia;
+            entity.DataFinalVigencia = model.DataFinalVigencia;
+            //Atualizar
             bool hasResult = await RotaUrlRepository.Update(entity);
             if (!hasResult)
-                return NotFound("Não foi possível atualizar a Rota Url.");
-            return Ok($"Rota Url [{model.Id}] atualizada com sucesso.");
+                return NotFound("Não foi possível atualizar a rota URL.");
+            return Ok($"Rota URL [chave: {model.Chave}] atualizada com sucesso.");
         }
 
         [HttpDelete("{id}")]
@@ -81,8 +98,8 @@ namespace UrlRouter.WebApi.Controllers
         {
             bool hasResult = await RotaUrlRepository.Delete(id);
             if (!hasResult)
-                return NotFound("Não foi possível remover a Rota Url.");
-            return Ok($"Rota Url [{id}] removido com sucesso.");
+                return NotFound("Não foi possível remover a rota URL.");
+            return Ok($"Rota URL [id: {id}] removida com sucesso.");
         }
     }
 }

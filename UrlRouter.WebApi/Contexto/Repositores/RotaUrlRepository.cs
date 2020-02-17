@@ -63,9 +63,12 @@ namespace UrlRouter.WebApi.Contexto.Repositores
         {
             if (string.IsNullOrEmpty(nome) && hasVigente == false)
                 return await _context.RotaUrl.Find(_ => true).ToListAsync();
-            
             DateTimeOffset dataCorrente = DateTimeOffset.Now.Date;
-            FilterDefinition<RotaUrlEntity> filter = Builders<RotaUrlEntity>.Filter.Where(m => m.Nome.Contains(nome) && m.DataInicialVigencia >= dataCorrente && (m.DataFinalVigencia == null || m.DataFinalVigencia <= dataCorrente));
+            FilterDefinition<RotaUrlEntity> filter = null;
+            if (string.IsNullOrEmpty(nome) && hasVigente == true)
+                filter = Builders<RotaUrlEntity>.Filter.Where(w => w.DataInicialVigencia >= dataCorrente && (w.DataFinalVigencia == null || w.DataFinalVigencia <= dataCorrente));
+            else
+                filter = Builders<RotaUrlEntity>.Filter.Where(w => w.Nome.Contains(nome));
             return await _context.RotaUrl.Find(filter).ToListAsync();
         }
 

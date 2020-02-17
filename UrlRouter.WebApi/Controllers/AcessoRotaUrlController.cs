@@ -39,7 +39,11 @@ namespace UrlRouter.WebApi.Controllers
         public async Task<IActionResult> Create([FromBody] AcessoRotaUrlModel model)
         {
             if (model == null)
-                return BadRequest("Informações de Acesso a Rota Url não informada.");
+                return BadRequest("Informações de Acesso a Rota Url não preenchidas.");
+            if (string.IsNullOrEmpty(model.ChaveRota))
+                return BadRequest("Chave da rota url não informada, obrigatório.");
+            if (model.DataHoraAcesso == null)
+                model.DataHoraAcesso = DateTime.Now;
             var entity = ConvertModels.ConverterToEntity(model);
             await AcessoRotaUrlRepository.Create(entity);
             return Ok($"Acesso a rota Url [{entity.Id}] registrado com sucesso.");
