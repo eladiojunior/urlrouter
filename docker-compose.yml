@@ -16,6 +16,9 @@ services:
       dockerfile: UrlRouter.AspNetMvc/Dockerfile
     depends_on:
       - urlrouter.webapi
+    ports:
+      - "8080:80"
+      - "8081:443"
 
   mongo:
     container_name: MongoDB

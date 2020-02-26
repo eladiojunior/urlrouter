@@ -10,7 +10,7 @@ EXPOSE 443
 
 FROM mcr.microsoft.com/dotnet/core/sdk:2.1-nanoserver-1809 AS build
 WORKDIR /src
-COPY ["UrlRouter.MVC/UrlRouter.AspNetMvc.csproj", "UrlRouter.AspNetMvc/"]
+COPY ["UrlRouter.AspNetMvc/UrlRouter.AspNetMvc.csproj", "UrlRouter.AspNetMvc/"]
 RUN dotnet restore "UrlRouter.AspNetMvc/UrlRouter.AspNetMvc.csproj"
 COPY . .
 WORKDIR "/src/UrlRouter.AspNetMvc"

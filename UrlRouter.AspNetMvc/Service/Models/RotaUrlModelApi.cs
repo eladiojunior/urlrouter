@@ -2,6 +2,7 @@
 {
     public class RotaUrlModelApi
     {
+        public string Id { get; set; }
         public string Chave { get; set; }
         public string Nome { get; set; }
         public string Descricao { get; set; }
